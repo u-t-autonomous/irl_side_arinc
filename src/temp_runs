@@ -1,0 +1,65 @@
+
+
+
+# ------------- ACTIVE DFA LEARNING, NO OBSTACLE -------------
+python src/main_irl2.py --main_function="produce_grids" --fileName_grids="active_dfa_learning" --train_grid_init_type="init_random" --n_obstacles="0" --n_imp_objs=4 --num_grids_tr=2 --num_grids_test=20 --n_dim=12 --obj_type="non_monotone_2"
+
+
+# ------------- NOTE: now produce optimal trajs is called within train
+
+python src/main_irl2.py --main_function="produce_opt_trajs_time_limited"  --num_optimal_trajs={init_vars["num_optimal_trajs"]} --fileName_tr_test={init_vars["fileName_tr_test"]} 
+
+python src/main_irl2.py --main_function="train_IRL_active" --fileName_tr_test="dev2" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="opt_trajs_time_limited_1000" --num_trajs_used=1000 --GT_dfa_address=./GT_DFA/automaton_dev2.txt --lr=0.03 --gamma=0.90 --reward_input_size=3 --num_runs=1 --num_theta_updates=500 --time_limit=1000
+
+python src/main_irl2.py --main_function="train_IRL_active" --fileName_tr_test="dev3" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="opt_trajs_time_limited_1000" --num_trajs_used=1000 --GT_dfa_address=./GT_DFA/automaton_dev3.txt --lr=0.03 --gamma=0.90 --reward_input_size=3 --num_runs=1 --num_theta_updates=800 --time_limit=1000
+
+python src/main_irl2.py --main_function="train_IRL_active" --fileName_tr_test="dev4" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=5 --num_optimal_trajs=5 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --lr=0.003 --gamma=0.90 --reward_input_size=3 --num_runs=1 --num_theta_updates=10 --time_limit=1000 
+
+python src/main_irl2.py --main_function="train_IRL_active" --fileName_tr_test="dev5" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=5 --num_optimal_trajs=5 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --lr=0.003 --gamma=0.90 --reward_input_size=3 --num_runs=1 --num_theta_updates=10 --time_limit=1000 
+
+
+
+
+
+
+# --------------- Training IRL from inferred DFA -----------
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange9990" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=50 --num_optimal_trajs=70 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9901_3.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=1000 --time_limit=1000 
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99901" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=50 --num_optimal_trajs=70 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9901_3.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=1000 --time_limit=1000 
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99902" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=50 --num_optimal_trajs=70 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9901_3.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=1000 --time_limit=1000 
+
+
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="dev" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=5 --num_optimal_trajs=7 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9900_2.txt --lr=0.003 --gamma=0.9 --reward_input_size=3 --num_runs=1 --num_theta_updates=8000 --time_limit=1000
+
+
+
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="dev" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=80 --num_optimal_trajs=100 --GT_dfa_address=./GT_DFA/automaton_dev7.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9903_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=5 --num_theta_updates=100 --time_limit=4000 
+
+
+
+
+# --------------- Training IRL from inferred DFA -----------
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="dev" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9900_2.txt --lr=0.003 --gamma=0.9 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=1000 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

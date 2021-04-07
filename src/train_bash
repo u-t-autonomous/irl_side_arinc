@@ -1,0 +1,51 @@
+
+# --------------- Training IRL from inferred DFA -----------
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99900" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9900_2.txt --lr=0.003 --gamma=0.9 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=1000 &
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99901" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9901_3.txt --lr=0.003 --gamma=0.9 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=1000 &
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99902" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev6.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9902_2.txt --lr=0.003 --gamma=0.9 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=1000 &
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99903" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev7.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9903_2.txt --lr=0.003 --gamma=0.9 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=1000 &
+
+
+------- multiple runs
+
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99904" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9900_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=5 --num_theta_updates=10000 --time_limit=2000 &
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99905" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9901_3.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=5 --num_theta_updates=10000 --time_limit=2000 &
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99906" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev6.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9902_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=5 --num_theta_updates=10000 --time_limit=2000 &
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99907" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev7.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9903_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=5 --num_theta_updates=10000 --time_limit=2000 &
+
+#. --------- memoryless baseline
+python src/main_irl2.py --main_function="train_base_memoryless" --fileName_tr_test="orange99910" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9900_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=2000 &
+
+
+python src/main_irl2.py --main_function="train_base_memoryless" --fileName_tr_test="orange99911" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9901_3.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=2000 &
+
+
+python src/main_irl2.py --main_function="train_base_memoryless" --fileName_tr_test="orange99912" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev7.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9903_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=2000 &
+
+
+python src/main_irl2.py --main_function="train_base_memoryless" --fileName_tr_test="orange99913" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev6.txt --tr_dfa_address=./inferred_DFAs/automaton_orange9902_2.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=10000 --time_limit=2000 &
+
+
+# ------ baseline DFA
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99915" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev4.txt --tr_dfa_address=./GT_DFA/automaton_base.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=100 --time_limit=2000 &
+
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99916" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev5.txt --tr_dfa_address=./GT_DFA/automaton_base.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=100 --time_limit=2000 &
+
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99917" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev6.txt --tr_dfa_address=./GT_DFA/automaton_base.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=100 --time_limit=2000 &
+
+
+python src/main_irl2.py --main_function="train_from_inferred_DFA" --fileName_tr_test="orange99918" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited" --num_trajs_used=800 --num_optimal_trajs=1000 --GT_dfa_address=./GT_DFA/automaton_dev7.txt --tr_dfa_address=./GT_DFA/automaton_base.txt --lr=0.003 --gamma=0.85 --reward_input_size=3 --num_runs=1 --num_theta_updates=100 --time_limit=2000 &
+
+
+

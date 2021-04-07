@@ -1,0 +1,30 @@
+
+# --------------- Testing active IRL with information bits -----------
+
+python src/main_irl2.py --main_function="test_active" --fileName_tr_test="orange99900" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" --time_limit=1000 &
+
+python src/main_irl2.py --main_function="test_active" --fileName_tr_test="orange99901" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_active" --fileName_tr_test="orange99902" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_active" --fileName_tr_test="orange99903" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+# --------------- Testing IRL with information bits -----------
+
+python src/main_irl2.py --main_function="test_bits" --fileName_tr_test="bits0001" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_bits" --fileName_tr_test="bits0002" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_bits" --fileName_tr_test="bits0003" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_bits" --fileName_tr_test="bits0004" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+# --------------- Testing memoryless IRL -----------
+
+python src/main_irl2.py --main_function="test_memoryless_baseline" --fileName_tr_test="orange99910" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_memoryless_baseline" --fileName_tr_test="orange99911" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_memoryless_baseline" --fileName_tr_test="orange99912" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
+
+python src/main_irl2.py --main_function="test_memoryless_baseline" --fileName_tr_test="orange99913" --fileName_grids="active_dfa_learning" --fileName_opt_trajs="produce_opt_trajs_time_limited"  --num_runs=1  --test_type="multiple_test_grids" &
