@@ -1,0 +1,48 @@
+main_function: produce_opt_trajs_time_limited
+fileName_grids: door
+device: cpu
+positive_reward: 10
+negative_reward: -10
+n_dim: 9
+n_imp_objs: None
+n_obstacles: None
+imp_obj_idxs_init_det: [[(7, 4)], [(10, 10)]]
+obstacle_idxs_det: [[(4, 0), (4, 1), (4, 2), (4, 6), (4, 7), (4, 8)], [(1, 1), (2, 8), (2, 9), (2, 10), (2, 11), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8), (3, 9), (3, 10), (3, 11), (5, 0), (5, 1), (5, 2), (6, 2), (7, 0), (7, 1), (7, 2), (8, 5), (8, 6), (8, 8), (8, 9), (9, 0), (9, 5), (9, 6), (10, 5), (10, 6), (10, 8), (11, 2), (11, 5), (11, 6)]]
+imp_obj_idxs_init_det_list: [[(7, 4)]]
+obstacle_idxs_det_list: [[(4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8)]]
+obj_type: monotone
+RGB: False
+pad_element: -1
+random_start: True
+train_grid_init_type: init_det
+num_grids_tr: None
+num_grids_test: 1
+train NOTE: 
+fileName_tr_test: door_100_10_40_leftupper
+fileName_opt_trajs: produce_opt_trajs_time_limited
+training_function_name: train_from_inferred_DFA
+num_theta_updates: 10000
+save_model_interval: 5000
+num_trajs_used: 8
+run_mode: restart
+num_runs: 1
+verbose: False
+val_period: 20
+num_optimal_trajs: 10
+thresh_Q_optimal: 1e-07
+thresh_y_optimal: 1e-07
+trajs_address: grids/door/produce_opt_trajs_time_limited/door_100_10_40_leftupper/
+optimal_policy_type: soft
+time_limit: 1000
+GT_dfa_address: ./inferred_DFAs/arinc.txt
+tr_dfa_address: ./inferred_DFAs/arinc.txt
+lr: 0.003
+lam_phi: 100.0
+lam_reg: 0.0
+gamma: 0.9
+reward_net: MLP
+reward_input_size: 3
+thresh_Q_theta: 0.001
+thresh_grad_Q_theta: 0.0001
+thresh_Y_theta: 0.0001
+thresh_grad_Y_theta: 0.0001
