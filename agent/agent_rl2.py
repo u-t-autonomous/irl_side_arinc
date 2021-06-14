@@ -747,7 +747,7 @@ class agent_RL_parent:
         grad_L_D_theta = grad_L_D_theta / num_trajs_used
         return grad_L_D_theta, 2 *  weights_flat
 
-    def calc_y_theta(self,thresh,horizon=170):
+    def calc_y_theta(self,thresh):
         """
         summary: calculates y(s,q) using dynamic programming based on Eq. 15 in the writeup
 
@@ -757,110 +757,106 @@ class agent_RL_parent:
 
         delta = thresh + 1
         counter = 0
-        # ##
-        # adj_matrix = np.zeros((self.MDP.n_dim*self.MDP.n_dim-13,self.MDP.n_dim*self.MDP.n_dim-13))
-        # print(adj_matrix.shape)
-        # for i in range(self.MDP.n_dim):
-        #     for j in range(self.MDP.n_dim):
-        #         if (i,j) == (4,0) or (i,j) == (4,1) or (i,j) == (4,2) or (i,j) == (4,6) or (i,j) == (4,7) or (i,j) == (4,8) or (i,j) == (6,3) or (i,j) == (6,4) or (i,j) == (6,5) or (i,j) == (7,3) or (i,j) == (7,4) or (i,j) == (7,5) or (i,j) == (6,3) or (i,j) == (8,4) or (i,j) == (8,5):
-        #             continue
-        #         if i<=3:
-        #             cell_num = i*self.MDP.n_dim+j
-        #         elif i==4:
-        #             cell_num = i*self.MDP.n_dim+j-3
-        #         elif i==5:
-        #             cell_num = i*self.MDP.n_dim+j-6
-        #         elif i==6 and j<=3:
-        #             cell_num = i*self.MDP.n_dim+j-6
-        #         elif i==6 and j>5:
-        #             cell_num = i*self.MDP.n_dim+j-9
-        #         elif i==7 and j<=3:
-        #             cell_num = i*self.MDP.n_dim+j-9
-        #         elif i==7 and j>5:
-        #             cell_num = i*self.MDP.n_dim+j-12
-        #         elif i==8 and j<=3:
-        #             cell_num = i*self.MDP.n_dim+j-12
-        #         elif i==8 and j>5:
-        #             cell_num = i*self.MDP.n_dim+j-15
-        #         for k in self.DFA.non_terminal_states: # we excluded state 4 as the y(s,q) is zero for that state
-        #             for l in range(4):
-        #                 ip,jp,kp = self.PA.transition_table[(i,j,k,l)][:3]
-        #                 if kp == 1:
-        #                     adj_matrix[cell_num,adj_matrix.shape[0]-2] = self.pi_theta[i,j,k,l]
-        #                 elif kp == 2:
-        #                     adj_matrix[cell_num,adj_matrix.shape[0]-1] = self.pi_theta[i,j,k,l]
-        #                 elif ip<=3:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp] = self.pi_theta[i,j,k,l]
-        #                 elif ip==4:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-3] = self.pi_theta[i,j,k,l]
-        #                 elif ip==5:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-6] = self.pi_theta[i,j,k,l]
-        #                 elif ip==6 and jp<=3:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-6] = self.pi_theta[i,j,k,l]
-        #                 elif ip==6 and jp>5:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-9] = self.pi_theta[i,j,k,l]
-        #                 elif ip==7 and jp<=3:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-9] = self.pi_theta[i,j,k,l]
-        #                 elif ip==7 and jp>5:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-12] = self.pi_theta[i,j,k,l]
-        #                 elif ip==8 and jp<=3:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-12] = self.pi_theta[i,j,k,l]
-        #                 elif ip==8 and jp>5:
-        #                     adj_matrix[cell_num,ip*self.MDP.n_dim+jp-15] = self.pi_theta[i,j,k,l]
-        # print(max(abs(np.linalg.eigvals(adj_matrix))))
-        # # exit()
-        # y_theta_below = np.zeros((self.MDP.n_dim, self.MDP.n_dim, self.DFA.n_states))
-        # y_theta_above = np.ones((self.MDP.n_dim, self.MDP.n_dim, self.DFA.n_states))
-        # for q_accept in self.DFA.accepting_states:
-        #     y_theta_below[:,:,q_accept] = np.ones((self.MDP.n_dim, self.MDP.n_dim)) # y is always one for accepting states
-        # for q_fail in self.DFA.failing_states:
-        #     y_theta_above[:,:,q_fail] = np.zeros((self.MDP.n_dim, self.MDP.n_dim)) # y is always zero for failing states
-        #
-        # while delta > thresh:
-        #     counter += 1
-        #     # old_y_theta = copy.deepcopy(self.y_theta)
-        #     for i in range(self.MDP.n_dim):
-        #         for j in range(self.MDP.n_dim):
-        #             for k in self.DFA.non_terminal_states: # we excluded state 4 as the y(s,q) is zero for that state
-        #                 y_sum_below = 0
-        #                 y_sum_above = 0
-        #                 for l in range(4):
-        #                     ip,jp,kp = self.PA.transition_table[(i,j,k,l)][:3]
-        #                     y_sum_below += self.pi_theta[i,j,k,l] * y_theta_below[ip,jp,kp]
-        #                     y_sum_above += self.pi_theta[i,j,k,l] * y_theta_above[ip,jp,kp]
-        #                 y_theta_below[i,j,k] = y_sum_below
-        #                 y_theta_above[i,j,k] = y_sum_above
-        #
-        #     delta_array = np.abs(y_theta_above - y_theta_below)
-        #     delta = np.mean(delta_array)  # 1 norm
-        #     if counter%5000 == 0:
-        #         print("below:",y_theta_below[:,:,0])
-        #         print("above:",y_theta_above[:,:,0])
-        #         print("delta:"+str(delta))
-        # self.y_theta =  copy.deepcopy(y_theta_below)
-        # ##
-
-        self.y_theta = np.zeros((self.MDP.n_dim, self.MDP.n_dim, self.DFA.n_states))
+        adj_matrix = np.zeros((self.MDP.n_dim*self.MDP.n_dim-13,self.MDP.n_dim*self.MDP.n_dim-13))
+        print(adj_matrix.shape)
+        for i in range(self.MDP.n_dim):
+            for j in range(self.MDP.n_dim):
+                if (i,j) == (4,0) or (i,j) == (4,1) or (i,j) == (4,2) or (i,j) == (4,6) or (i,j) == (4,7) or (i,j) == (4,8) or (i,j) == (6,3) or (i,j) == (6,4) or (i,j) == (6,5) or (i,j) == (7,3) or (i,j) == (7,4) or (i,j) == (7,5) or (i,j) == (6,3) or (i,j) == (8,4) or (i,j) == (8,5):
+                    continue
+                if i<=3:
+                    cell_num = i*self.MDP.n_dim+j
+                elif i==4:
+                    cell_num = i*self.MDP.n_dim+j-3
+                elif i==5:
+                    cell_num = i*self.MDP.n_dim+j-6
+                elif i==6 and j<=3:
+                    cell_num = i*self.MDP.n_dim+j-6
+                elif i==6 and j>5:
+                    cell_num = i*self.MDP.n_dim+j-9
+                elif i==7 and j<=3:
+                    cell_num = i*self.MDP.n_dim+j-9
+                elif i==7 and j>5:
+                    cell_num = i*self.MDP.n_dim+j-12
+                elif i==8 and j<=3:
+                    cell_num = i*self.MDP.n_dim+j-12
+                elif i==8 and j>5:
+                    cell_num = i*self.MDP.n_dim+j-15
+                for k in self.DFA.non_terminal_states: # we excluded state 4 as the y(s,q) is zero for that state
+                    for l in range(4):
+                        ip,jp,kp = self.PA.transition_table[(i,j,k,l)][:3]
+                        if kp == 1:
+                            adj_matrix[cell_num,adj_matrix.shape[0]-2] = self.pi_theta[i,j,k,l]
+                        elif kp == 2:
+                            adj_matrix[cell_num,adj_matrix.shape[0]-1] = self.pi_theta[i,j,k,l]
+                        elif ip<=3:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp] = self.pi_theta[i,j,k,l]
+                        elif ip==4:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-3] = self.pi_theta[i,j,k,l]
+                        elif ip==5:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-6] = self.pi_theta[i,j,k,l]
+                        elif ip==6 and jp<=3:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-6] = self.pi_theta[i,j,k,l]
+                        elif ip==6 and jp>5:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-9] = self.pi_theta[i,j,k,l]
+                        elif ip==7 and jp<=3:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-9] = self.pi_theta[i,j,k,l]
+                        elif ip==7 and jp>5:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-12] = self.pi_theta[i,j,k,l]
+                        elif ip==8 and jp<=3:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-12] = self.pi_theta[i,j,k,l]
+                        elif ip==8 and jp>5:
+                            adj_matrix[cell_num,ip*self.MDP.n_dim+jp-15] = self.pi_theta[i,j,k,l]
+        print(max(abs(np.linalg.eigvals(adj_matrix))))
+        # exit()
+        y_theta_below = np.zeros((self.MDP.n_dim, self.MDP.n_dim, self.DFA.n_states))
+        y_theta_above = np.ones((self.MDP.n_dim, self.MDP.n_dim, self.DFA.n_states))
         for q_accept in self.DFA.accepting_states:
-            self.y_theta[:,:,q_accept] = np.ones((self.MDP.n_dim, self.MDP.n_dim)) # y is always one for accepting states
-        # while delta > thresh:
-        for _ in range(horizon):
+            y_theta_below[:,:,q_accept] = np.ones((self.MDP.n_dim, self.MDP.n_dim)) # y is always one for accepting states
+        for q_fail in self.DFA.failing_states:
+            y_theta_above[:,:,q_fail] = np.zeros((self.MDP.n_dim, self.MDP.n_dim)) # y is always zero for failing states
+
+        while delta > thresh:
             counter += 1
-            old_y_theta = copy.deepcopy(self.y_theta)
+            # old_y_theta = copy.deepcopy(self.y_theta)
             for i in range(self.MDP.n_dim):
                 for j in range(self.MDP.n_dim):
                     for k in self.DFA.non_terminal_states: # we excluded state 4 as the y(s,q) is zero for that state
-                        y_sum = 0
+                        y_sum_below = 0
+                        y_sum_above = 0
                         for l in range(4):
                             ip,jp,kp = self.PA.transition_table[(i,j,k,l)][:3]
-                            y_sum += self.pi_theta[i,j,k,l] * self.y_theta[ip,jp,kp]
-                        self.y_theta[i,j,k] = y_sum
+                            y_sum_below += self.pi_theta[i,j,k,l] * y_theta_below[ip,jp,kp]
+                            y_sum_above += self.pi_theta[i,j,k,l] * y_theta_above[ip,jp,kp]
+                        y_theta_below[i,j,k] = y_sum_below
+                        y_theta_above[i,j,k] = y_sum_above
 
-            if counter%5000 == 0:
-                print(self.y_theta[:,:,0])
+            # if counter%1000 == 0:
+            #     print(y_theta_above[:,:,0])
 
-            delta_array = np.abs(self.y_theta - old_y_theta)
+            delta_array = np.abs(y_theta_above - y_theta_below)
             delta = np.mean(delta_array)  # 1 norm
+        self.y_theta =  copy.deepcopy(y_theta_below)
+
+        # # self.y_theta = np.zeros((self.MDP.n_dim, self.MDP.n_dim, self.DFA.n_states))
+        # for q_accept in self.DFA.accepting_states:
+        #     self.y_theta[:,:,q_accept] = np.ones((self.MDP.n_dim, self.MDP.n_dim)) # y is always one for accepting states
+        # while delta > thresh:
+        #     counter += 1
+        #     old_y_theta = copy.deepcopy(self.y_theta)
+        #     for i in range(self.MDP.n_dim):
+        #         for j in range(self.MDP.n_dim):
+        #             for k in self.DFA.non_terminal_states: # we excluded state 4 as the y(s,q) is zero for that state
+        #                 y_sum = 0
+        #                 for l in range(4):
+        #                     ip,jp,kp = self.PA.transition_table[(i,j,k,l)][:3]
+        #                     y_sum += self.pi_theta[i,j,k,l] * self.y_theta[ip,jp,kp]
+        #                 self.y_theta[i,j,k] = y_sum
+        #
+        #     if counter%1000 == 0:
+        #         print(self.y_theta[:,:,0])
+        #
+        #     delta_array = np.abs(self.y_theta - old_y_theta)
+        #     delta = np.mean(delta_array)  # 1 norm
 
     def calc_y_theta_eval(self,thresh):
         """

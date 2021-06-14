@@ -2,11 +2,8 @@
 from pdb import set_trace
 import numpy as np
 import copy
-import pickle
 
 import sys, os
-from os import listdir
-from os.path import isfile, join
 from collections import namedtuple, OrderedDict
 import agent.agent_rl2 as agent_env
 # from envs.env2 import *
@@ -21,8 +18,6 @@ import torch.optim as optim
 import json
 import pickle
 
-import cv2
-
 def produce_mdp(init_vars):
     # create an mdp
     MDP_obj = env_mod.MDP(n_dim = init_vars["n_dim"],
@@ -31,8 +26,6 @@ def produce_mdp(init_vars):
                 n_obstacles = init_vars["n_obstacles"],
                 imp_obj_idxs_init_det = init_vars["imp_obj_idxs_init_det"],
                 obstacle_idxs_det = init_vars["obstacle_idxs_det"],
-                road_idxs_det = init_vars["road_idxs_det"],
-                dirt_idxs_det = init_vars["dirt_idxs_det"],
                 obj_type = init_vars["obj_type"],
                 random_start = init_vars["random_start"],
                 init_type=init_vars["init_type"],
@@ -349,81 +342,6 @@ def provide_counter_ex(init_vars, DFA_counter, mdp):
         assert len(contradictions) != 0
         shortest_trace = _find_shortest_trace(contradictions)
         return _convert_trace_string(shortest_trace)
-
-def produce_labels_from_map(init_vars):
-    resolution = 0.1
-    grid_size = 4
-    pixels_per_grid = int(grid_size/resolution)
-    x_bot = 62
-    x_up = 112
-    y_bot = 37
-    y_up = 87
-    map_image = cv2.imread(init_vars["map_address"], cv2.IMREAD_UNCHANGED)
-    terrains = cv2.split(map_image)
-
-    x_pixs, y_pixs = terrains[0].shape
-
-    # Clean up each channel from obstacles
-    aspalth_masked = np.where(terrains[3] > 0, 0, terrains[0])
-    dirt_masked = np.where(terrains[3] > 0, 0, terrains[1])
-    grass_masked = np.where(terrains[3] > 0, 0, terrains[2])
-    obstacle = terrains[3]
-
-    obstacle_list = []
-    road_list = []
-    dirt_list = []
-
-    for i in range(x_bot,x_up):
-        for j in range(y_bot,y_up):
-            if np.any(np.where(obstacle[pixels_per_grid*i:pixels_per_grid*i+pixels_per_grid,
-                              pixels_per_grid*j:pixels_per_grid*j+pixels_per_grid]>0,True,False)):
-                obstacle_list.append((i-x_bot,j-y_bot))
-            elif np.any(np.where(aspalth_masked[pixels_per_grid*i:pixels_per_grid*i+pixels_per_grid,
-                              pixels_per_grid*j:pixels_per_grid*j+pixels_per_grid]>0,True,False)):
-                road_list.append((i-x_bot,j-y_bot))
-            elif np.any(np.where(dirt_masked[pixels_per_grid*i:pixels_per_grid*i+pixels_per_grid,
-                              pixels_per_grid*j:pixels_per_grid*j+pixels_per_grid]>0,True,False)):
-                dirt_list.append((i-x_bot,j-y_bot))
-
-    init_vars["obstacle_idxs_det"] = [[],obstacle_list]
-    init_vars["road_idxs_det"] = road_list
-    init_vars["dirt_idxs_det"] = dirt_list
-
-    return init_vars
-
-def get_trajectories(init_vars):
-    print("am")
-    all_trajs = []
-    all_files = [f for f in listdir(init_vars["traj_address"]) if isfile(join(init_vars["traj_address"], f))]
-    for f in all_files:
-        with open(join(init_vars["traj_address"], f), "rb") as fp:
-            traj = pickle.load(fp)
-
-        traj_list = []
-        first = True
-        for point in traj:
-            # x_grid = int(((point[0]+1) // 2) + 13)
-            # y_grid = int((point[1] // 2) + 92)
-            x_grid = int(((point[0]+2) // 4) + 6)
-            y_grid = int((point[1] // 4) + 46)
-            if not first:
-                if old_x_grid > x_grid:
-                    action = 0
-                elif old_x_grid < x_grid:
-                    action = 1
-                elif old_y_grid > y_grid:
-                    action = 3
-                elif old_y_grid < y_grid:
-                    action = 2
-                else:
-                    continue
-                traj_list.append((0,[x_grid,y_grid],0,action))
-            old_x_grid = copy.deepcopy(x_grid)
-            old_y_grid = copy.deepcopy(y_grid)
-            first = False
-        traj_list.append("game won")
-        all_trajs.append(traj_list)
-    return all_trajs
 
 def _convert_trace_string(trace):
     str_trace = ""

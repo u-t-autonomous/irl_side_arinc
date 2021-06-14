@@ -25,8 +25,6 @@ class MDP:
         n_obstacles,
         imp_obj_idxs_init_det,
         obstacle_idxs_det,
-        road_idxs_det,
-        dirt_idxs_det,
         obj_type,
         random_start,
         init_type,
@@ -51,8 +49,6 @@ class MDP:
         self.mdp_state = np.zeros(2,dtype=int)
         self.imp_obj_idxs_init_det = imp_obj_idxs_init_det
         self.obstacle_idxs_det = obstacle_idxs_det
-        self.road_idxs_det = road_idxs_det
-        self.dirt_idxs_det = dirt_idxs_det
         self.grid = None
         self.grid_padded = None
 
@@ -360,25 +356,22 @@ class MDP:
             elif self.n_dim == 9:
                 imp_obj_idxs = self.imp_obj_idxs_init_det[0]
                 obstacle_idxs = self.obstacle_idxs_det[0]
-            else:
-                imp_obj_idxs = self.imp_obj_idxs_init_det[1]
-                obstacle_idxs = self.obstacle_idxs_det[1]
 
             # removing the indexes of obstacles and all important cells from the set of all idxs
             remaining_idxs = set(all_idxs)
             for item in imp_obj_idxs:
                 x_idx, y_idx = item
-                remove_idxs = set(itertools.product(np.arange(x_idx-1,x_idx+2), np.arange(y_idx-1,y_idx+2)))
-                remaining_idxs = remaining_idxs - remove_idxs
-                # remaining_idxs = remaining_idxs - set(imp_obj_idxs)
+                # remove_idxs = set(itertools.product(np.arange(x_idx-1,x_idx+2), np.arange(y_idx-1,y_idx+2)))
+                # remaining_idxs = remaining_idxs - remove_idxs
+                remaining_idxs = remaining_idxs - set(imp_obj_idxs)
             remaining_idxs = remaining_idxs - set(obstacle_idxs)
 
         # non_imp_idxs = list(set(all_idx) - set(imp_obj_idxs) - set(obstacle_idxs))
-        # for counter, item in enumerate(imp_obj_idxs):
-        #     x_idx, y_idx = item
-        #     # imp_obj_idxs.append((x_idx+1,y_idx+1))
-        #     self.grid[:,x_idx-1:x_idx+2,y_idx-1:y_idx+2] = self.imp_objs_init[counter]
-        #     # self.grid[:,x_idx,y_idx] = self.all_colors[0]
+        for counter, item in enumerate(imp_obj_idxs):
+            x_idx, y_idx = item
+            # imp_obj_idxs.append((x_idx+1,y_idx+1))
+            # self.grid[:,x_idx-1:x_idx+2,y_idx-1:y_idx+2] = self.imp_objs_init[counter]
+            self.grid[:,x_idx,y_idx] = self.all_colors[0]
 
         for counter, item in enumerate(obstacle_idxs):
             x_idx, y_idx = item
@@ -392,25 +385,18 @@ class MDP:
                         # above line randomly chooses one color except black
             self.grid[:, x_idx, y_idx] =  self.all_colors[color_idx]
 
-        # It's activated for the road example
-        for item in self.road_idxs_det:
-            x_idx, y_idx = item
-            self.grid[:, x_idx, y_idx] =  self.all_colors[2]
+        road_idxs = [(0,4),(1,4),(2,4),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),
+                    (4,0),(4,1),(4,2),(4,3),(4,5)]
 
-        for item in self.dirt_idxs_det:
+        # It's activated for the road example
+        for item in road_idxs:
             x_idx, y_idx = item
-            self.grid[:, x_idx, y_idx] =  self.all_colors[1]
+            self.grid[:, x_idx, y_idx] =  self.all_colors[color_idx]
 
         for counter, item in enumerate(obstacle_idxs):
             x_idx, y_idx = item
             # obstacle_idxs.append((x_idx+1,y_idx+1))
             self.grid[:, x_idx, y_idx] = self.all_colors[-1]
-
-        for counter, item in enumerate(imp_obj_idxs):
-            x_idx, y_idx = item
-            # imp_obj_idxs.append((x_idx+1,y_idx+1))
-            self.grid[:,x_idx-1:x_idx+2,y_idx-1:y_idx+2] = self.imp_objs_init[counter]
-            # self.grid[:,x_idx,y_idx] = self.all_colors[0]
 
         # after all objects are placed in the grid, place them in the grid_padded as well,
         # all the neighborhoods will be taken from grid_padded
@@ -532,8 +518,8 @@ class MDP:
         # i, j = tuple(np.random.choice(3,(1,2))[0])
         # i = np.random.choice([0,1,2],1)[0]
         # j = np.random.choice([6,7,8],1)[0]
-        start[0] = 0
-        start[1] = 0
+        start[0] = i
+        start[1] = j
         return start
 
     def _deterministic_start(self):

@@ -19,8 +19,7 @@ from utils.utils_main_funcs import (
     create_dir_test, create_dir_opt_trajs, create_dir_grids, return_address_grids,
     return_addresses_logs_models, return_address_test, return_address_opt_trajs,
     run_active_DFA_inference, answer_query, run_trace, compare_DFAs, _find_shortest_trace,
-    provide_counter_ex, _convert_trace_string, _produce_win_trace, produce_envs_from_MDP_bits,
-    produce_labels_from_map, get_trajectories )
+    provide_counter_ex, _convert_trace_string, _produce_win_trace, produce_envs_from_MDP_bits )
 
 import copy
 import math
@@ -60,7 +59,7 @@ def init(args):
         init_vars["n_dim"] = args_dict["n_dim"] # default is 9
         init_vars["n_imp_objs"] = args_dict["n_imp_objs"]
         init_vars["n_obstacles"] = args_dict["n_obstacles"]
-        init_vars["imp_obj_idxs_init_det"] = [[(4,7)],[(33,45)]] #FV174 is the goal position on excel(bottom right)
+        init_vars["imp_obj_idxs_init_det"] = [[(4,8)],[(10,4),(10,7),(10,10)]] #FV174 is the goal position on excel(bottom right)
                                     # The first list is for n_dim=9, and second is for 12
                                     # only used when "init_det"
         # init_vars["obstacle_idxs_det"] = [[(8,0)],
@@ -73,18 +72,18 @@ def init(args):
         # (3,5),(3,6),(3,7),(3,8),(3,9),(3,10),(3,11),(5,0),(5,1),(5,2),(6,2),
         # (7,0),(7,1),(7,2),(8,5),(8,6),(8,8),(8,9),(9,0),(9,5),(9,6),(10,5),(10,6),(10,8),
         # (11,2),(11,5),(11,6)]] # only used when "init_det"
-        init_vars["obstacle_idxs_det"] = [[(1,1),(7,1),
-        (1,7),(7,7),(5,4)],
+        init_vars["obstacle_idxs_det"] = [[(0,0),(0,1),(1,0),(1,1),(7,0),(8,0),(7,1),(8,1),
+        (0,7),(0,8),(1,7),(1,8),(7,7),(7,8),(8,7),(8,8)],
         [(2,2),(2,3),(2,4),(2,5),(2,7),(2,8),(3,0),(3,1),
         (3,2),(3,3),(3,4),(3,5),(3,6),(3,7),(3,8),(3,9),(3,10),(5,9),(5,10),(5,11),(6,9),
         (6,10),(7,8),(7,9),(7,10),(7,11),(8,0),(8,2),(8,3),(8,6),(8,7),(8,9),(9,0),(10,0),
         (10,2),(11,0)]] #GB174 is the goal position on excel(bottom right)
         # init_vars["imp_obj_idxs_init_det_list"] = [[(10,10)],[(10,10)],[(10,10)],[(10,10)],
         # [(10,10)],[(10,10)],[(9,10)],[(6,10)],[(5,10)]]
-        init_vars["imp_obj_idxs_init_det_list"] = [[(4,7)]]
+        init_vars["imp_obj_idxs_init_det_list"] = [[(4,8)]]
         # init_vars["imp_obj_idxs_init_det_list"] = [[(8,8)],[(7,4)]]
-        init_vars["obstacle_idxs_det_list"] = [[(1,1),(7,1),
-        (1,7),(7,7),(4,5)]]
+        init_vars["obstacle_idxs_det_list"] = [[(0,0),(0,1),(1,0),(1,1),(7,0),(8,0),(7,1),(8,1),
+        (0,7),(0,8),(1,7),(1,8),(7,7),(7,8),(8,7),(8,8),(4,5)]]
         # init_vars["obstacle_idxs_det_list"] = [[(1,1),(2,8),(2,9),(2,10),(2,11),(3,3),(3,4),
         # (3,5),(3,6),(3,7),(3,8),(3,9),(3,10),(3,11),(5,1),(5,2),(5,3),(6,2),
         # (7,0),(7,1),(7,2),(8,5),(8,6),(8,8),(8,9),(9,0),(9,5),(9,6),(10,5),(10,6),(10,8),
@@ -113,11 +112,6 @@ def init(args):
         # (3,5),(3,6),(3,7),(3,8),(3,9),(3,10),(3,11),(5,3),(5,4),(5,5),(6,2),
         # (7,0),(7,1),(7,2),(8,5),(8,6),(8,8),(8,9),(9,0),(9,2),(9,3),(10,2),(10,3),(10,8),
         # (11,2),(11,5),(11,6)]]
-
-        if args_dict["map_address"]:
-            init_vars["map_address"] = args_dict["map_address"]
-            init_vars = produce_labels_from_map(init_vars)
-
         init_vars["obj_type"] = args_dict["obj_type"]
         init_vars["RGB"] = [False,True][0]
         init_vars["pad_element"] = -1
@@ -207,7 +201,6 @@ def init(args):
 
             # OPTIMAL TRAJECTORY VARIABLES
             init_vars["trajs_address"] = return_address_opt_trajs(grids_address,init_vars["fileName_opt_trajs"], init_vars["fileName_tr_test"])
-            init_vars["traj_address"] = args_dict["traj_address"]
 
             if args_dict["fileName_opt_trajs"] in ["produce_opt_trajs", "produce_opt_trajs_time_limited", "produce_opt_trajs_time_limited_bits"]:
                 init_vars["optimal_policy_type"] = ["soft","greedy","random"][0]
@@ -252,10 +245,10 @@ def init(args):
             init_vars["thresh_Q_theta"] = 0.001
             init_vars["thresh_grad_Q_theta"] = 0.0001
             init_vars["thresh_Y_theta"] = 0.0001
-            init_vars["thresh_grad_Y_theta"] = 0.000001
+            init_vars["thresh_grad_Y_theta"] = 0.0001
             # init_vars["thresh_Q_theta"] = 1e-8
             # init_vars["thresh_grad_Q_theta"] = 1e-8
-            # init_vars["thresh_Y_theta"] = 1e-10
+            # init_vars["thresh_Y_theta"] = 1e-8
             # init_vars["thresh_grad_Y_theta"] = 1e-8
             # ^^^^^^^^ end of init_vars ^^^^^^^^^
 
@@ -1534,7 +1527,7 @@ def train_from_inferred_DFA(init_vars):
     with open(logs_address + "MDP_train.pkl", "wb") as f:
         pickle.dump(MDP_obj, f)
     for run in range(init_vars['num_runs']):
-        print(agent.MDP.grid[:,33,45])
+        print(agent.MDP.grid[:,0,0])
         if init_vars["run_mode"]  == "continue":
             # Load models
             if agent.reward_net_name == "MLP":
@@ -1549,29 +1542,17 @@ def train_from_inferred_DFA(init_vars):
             print("producing new trajectories for the new DFA")
         command  = f'python3 src/main_irl2.py --main_function="produce_opt_trajs_time_limited" --fileName_grids={init_vars["fileName_grids"]} --fileName_tr_test={init_vars["fileName_tr_test"]} '
         produce_trajs = subprocess.call(args = command, shell=True)
+        print('am')
 
 
         with open(init_vars["trajs_address"] + "all_trajectories.pkl", "rb") as f:
             all_trajs = pickle.load(f)
-        # all_trajs=[]
-        # for i in range(1):
-        #     all_trajs.append([(0,[0,4],0,0),(0,[1,4],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[0,2],0,0),(0,[0,3],0,0),(0,[0,4],0,0),(0,[1,4],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[0,6],0,0),(0,[0,5],0,0),(0,[0,4],0,0),(0,[1,4],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[1,2],0,0),(0,[1,3],0,0),(0,[1,4],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[1,6],0,0),(0,[1,5],0,0),(0,[1,4],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[2,3],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[4,0],0,3),(0,[4,1],0,3),(0,[4,2],0,3),(0,[4,3],0,3),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[2,0],0,3),(0,[3,0],0,3),(0,[4,0],0,3),(0,[4,1],0,3),(0,[4,2],0,3),(0,[4,3],0,3),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[6,0],0,3),(0,[5,0],0,3),(0,[4,0],0,3),(0,[4,1],0,3),(0,[4,2],0,3),(0,[4,3],0,3),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[2,1],0,3),(0,[3,1],0,3),(0,[4,1],0,3),(0,[4,2],0,3),(0,[4,3],0,3),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-        #     all_trajs.append([(0,[6,1],0,3),(0,[5,1],0,3),(0,[4,1],0,3),(0,[4,2],0,3),(0,[4,3],0,3),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
-
-        if init_vars["traj_address"]:
-            all_trajs = get_trajectories(init_vars)
-            agent.demo_visitation_calculator(init_vars["num_trajs_used"], all_trajs) # fills in agent.visitation_counts
-        else:
-            agent.demo_visitation_calculator(init_vars["num_trajs_used"], all_trajs[0]) # fills in agent.visitation_counts
+        print(all_trajs)
+        all_trajs=[]
+        for i in range(5):
+            all_trajs.append([(0,[0,4],0,0),(0,[1,4],0,0),(0,[2,4],0,0),(0,[3,4],0,0),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
+            all_trajs.append([(0,[4,0],0,3),(0,[4,1],0,3),(0,[4,2],0,3),(0,[4,3],0,3),(0,[4,4],0,3),(0,[4,5],0,3),"game won"])
+        agent.demo_visitation_calculator(init_vars["num_trajs_used"], all_trajs) # fills in agent.visitation_counts
 
         if init_vars["run_mode"] == "restart":
             with open(logs_address + "loss_per_episode_" + "run_" + str(run) + ".txt", "w") as file:
@@ -1586,8 +1567,6 @@ def train_from_inferred_DFA(init_vars):
             min_range = int(loss[-1,3])
             max_range = min_range + init_vars["num_theta_updates"]
             loss = 0
-
-        L_best = -10000
 
         for epis in range(min_range, max_range):
             start = time.time()
@@ -1611,7 +1590,9 @@ def train_from_inferred_DFA(init_vars):
             agent.update_theta(grad_j)
             L_D_theta = agent.calc_L_D_theta(init_vars["num_trajs_used"])
             L_phi, min_y =  agent.calc_L_phi_theta()
-
+            if L_phi > 0.999:
+                torch.save(agent.reward_net.state_dict(), models_address + "reward_net_" + "run_" + str(run) + ".pt")
+                break
             L_phi_eval, min_y_eval = agent.calc_L_phi_theta_eval()
 
             end = time.time()
@@ -1625,11 +1606,7 @@ def train_from_inferred_DFA(init_vars):
                 if init_vars["verbose"] == True:
                     print ("SAVING THE MODELS .............")
                     print ()
-                if lam_phi*L_phi + L_D_theta > L_best:
-                    print('YES')
-                    L_best = lam_phi*L_phi + L_D_theta
-                    torch.save(agent.reward_net.state_dict(), models_address + "reward_net_" + "run_" + str(run) + ".pt")
-                # torch.save(agent.reward_net.state_dict(), models_address + "reward_net_" + "run_" + str(run) + ".pt")
+                torch.save(agent.reward_net.state_dict(), models_address + "reward_net_" + "run_" + str(run) + ".pt")
                 # validation_L_phi, validation_L_phi_eval = val(init_vars, mdp_objs_test, models_address, run)
 
                 if init_vars["verbose"] == True:
@@ -1678,27 +1655,26 @@ def train_from_inferred_DFA(init_vars):
 
                 with open(logs_address + "loss_per_episode_" + "run_" + str(run) + ".txt", "a") as file1:
                     file1.write(f'{success_ratio:>.5} {L_D_theta:>20} {L_phi:>20} {min_y:>15} {L_phi_eval:>20} {grad_L_D_theta_norm_one:.10} {grad_L_phi_theta_norm_one:.10} {reg_term_norm_one:.10} {epis} {epis_time:.4} \n')
-            print(epis)
             print(agent.y_theta[:,:,0])
         reward_from_NN = agent.eval_reward()
         print(reward_from_NN[:,:,0,0])
-        # agent.y_theta[2,2:6,0] = 0
-        # agent.y_theta[2,7:9,0] = 0
-        # agent.y_theta[3,:11,0] = 0
-        # agent.y_theta[5,9:,0] = 0
-        # agent.y_theta[6,9:11,0] = 0
-        # agent.y_theta[7,8:,0] = 0
-        # agent.y_theta[8,0,0] = 0
-        # agent.y_theta[8,2:4,0] = 0
-        # agent.y_theta[8,6:8,0] = 0
-        # agent.y_theta[8,9,0] = 0
-        # agent.y_theta[9,9,0] = 0
-        # agent.y_theta[10,0,0] = 0
-        # agent.y_theta[10,2,0] = 0
-        # agent.y_theta[11,0,0] = 0
-        # agent.y_theta[9,3:,0] = 1
-        # agent.y_theta[10,3:,0] = 1
-        # agent.y_theta[11,3:,0] = 1
+        agent.y_theta[2,2:6,0] = 0
+        agent.y_theta[2,7:9,0] = 0
+        agent.y_theta[3,:11,0] = 0
+        agent.y_theta[5,9:,0] = 0
+        agent.y_theta[6,9:11,0] = 0
+        agent.y_theta[7,8:,0] = 0
+        agent.y_theta[8,0,0] = 0
+        agent.y_theta[8,2:4,0] = 0
+        agent.y_theta[8,6:8,0] = 0
+        agent.y_theta[8,9,0] = 0
+        agent.y_theta[9,9,0] = 0
+        agent.y_theta[10,0,0] = 0
+        agent.y_theta[10,2,0] = 0
+        agent.y_theta[11,0,0] = 0
+        agent.y_theta[9,3:,0] = 1
+        agent.y_theta[10,3:,0] = 1
+        agent.y_theta[11,3:,0] = 1
         fig, ax = plt.subplots()
         im = ax.imshow(agent.y_theta[:,:,0])
         cbar = ax.figure.colorbar(im, ax=ax)
@@ -2593,7 +2569,7 @@ def test(init_vars):
     # init_vars["thresh_grad_Y_theta"] = 1e-4
     # init_vars["thresh_Q_theta"] = 1e-4
     # init_vars["thresh_grad_Q_theta"] = 1e-4
-    init_vars["thresh_Y_theta"] = 1e-3
+    # init_vars["thresh_Y_theta"] = 1e-8
     # init_vars["thresh_grad_Y_theta"] = 1e-4
 
     if not ("reward_input_size" in init_vars.keys()):
@@ -2625,15 +2601,13 @@ def test(init_vars):
             # exit()
 
 
-            # with open(init_vars["trajs_address"] + "all_trajectories.pkl", "rb") as f:
-            #     all_trajs = pickle.load(f)
-
-            all_trajs = get_trajectories(init_vars)
+            with open(init_vars["trajs_address"] + "all_trajectories.pkl", "rb") as f:
+                all_trajs = pickle.load(f)
 
 
             L_phi, min_y, y_theta, Q_theta, pi_theta, vis_count_opt, pi_opt_soft, pi_opt_greedy = agent.eval_task_performance(
-                   init_vars["num_trajs_used"], init_vars["thresh_Q_theta"], init_vars["thresh_Y_theta"], all_trajs)
-            num_eval_episodes = 5
+                   init_vars["num_trajs_used"], init_vars["thresh_Q_theta"], init_vars["thresh_Y_theta"], all_trajs[0])
+            num_eval_episodes = 100
             success_ratio, lose_ratio = eval_game_performance(init_vars, agent, num_eval_episodes)
             print(success_ratio)
             print(lose_ratio)
@@ -2643,7 +2617,7 @@ def test(init_vars):
             # agent.y_theta[6,3:6,0] = 1
             # agent.y_theta[7,3:6,0] = 1
             # agent.y_theta[8,3:6,0] = 1
-            # agent.y_theta[8,4,0] = 1
+            agent.y_theta[8,4,0] = 1
             fig, ax = plt.subplots()
             im = ax.imshow(agent.y_theta[:,:,0])
             # im = ax.imshow(agent.V_theta[:,:,0], norm=mc.Normalize(vmax=1))
@@ -2652,8 +2626,8 @@ def test(init_vars):
             plt.show()
             # exit()
 
-            with open('pi_theta_9_roady_100_hor_20.pkl', 'wb') as f:
-                pickle.dump(agent.pi_theta, f)
+            # with open('pi_theta_12_corner_100.pkl', 'wb') as f:
+            #     pickle.dump(agent.pi_theta, f)
             # exit()
 
             print("SAVING THE FILES ....")
@@ -3409,8 +3383,6 @@ def eval_game_performance(init_vars, agent, num_episodes):
     game_over_counter = 0
     time_over_counter = 0
     traj_steps_limit = init_vars["time_limit"]
-    traj_steps_limit = 170
-    print(traj_steps_limit)
     trajs = []
     for traj_number in range(num_episodes):
         traj = []
@@ -3458,7 +3430,6 @@ def eval_game_performance(init_vars, agent, num_episodes):
                 # print("GAME OVER!!!")
                 traj_mdp.append(tuple(next_mdp_state))
                 # print(traj_mdp)
-                # print(traj)
                 traj.append("game over")
 
 
@@ -3468,9 +3439,7 @@ def eval_game_performance(init_vars, agent, num_episodes):
                 # print(traj_mdp)
                 # print("GAME WON!!!")
                 # print(MDP_obj.grid[:,i,j])
-                print(traj_mdp)
-                with open('traj_0506.pkl', 'wb') as f:
-                    pickle.dump(traj_mdp, f)
+                # print(traj)
                 # print(PA_obj.DFA.accepting_states)
                 # print(PA_obj.DFA.dfa_state)
                 traj.append("game won")
@@ -3653,8 +3622,6 @@ if __name__ == '__main__':
     # parser.add_argument('--reward_net', type=str, choices=["MLP", "CNN", "att"])
     parser.add_argument("--GT_dfa_address", type=str)
     parser.add_argument("--tr_dfa_address", type=str)
-    parser.add_argument("--map_address", type=str)
-    parser.add_argument("--traj_address", type=str)
 
 
     parser.add_argument('--save_model_interval', type=int, default=5000, metavar='N', help='(default: 200)')
